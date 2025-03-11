@@ -8,11 +8,11 @@ public class TrisGUI {
     // small change
     private JFrame frame;
     private JButton[] buttons;
-    private boolean turno = true;
+    private boolean turn = true;
     private int drawCounter = 0;
 
 
-    public boolean Controllov(String[] BoardPos, String Symbol) {
+    public boolean Controlv(String[] BoardPos, String Symbol) {
         for(int i = 0; i<3; i++){
             if(BoardPos[i].equals(Symbol) && BoardPos[i*3+1].equals(Symbol) && BoardPos[i*3+2].equals(Symbol))
                 return true;}
@@ -37,38 +37,38 @@ public class TrisGUI {
         frame.setLayout(new GridLayout(3, 3));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         String[] Sign = new String[9];
-        Arrays.fill(Sign, "vuoto");
+        Arrays.fill(Sign, "Empty");
         for (int i = 0; i < buttons.length; i++) {
-            buttons[i] = new JButton("Vuoto");
+            buttons[i] = new JButton("Empty");
             final int ButtonIndex = i;
             frame.add(buttons[i]);
             buttons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (drawCounter < buttons.length) {
-                        if (Sign[ButtonIndex].equals("vuoto")) {
-                            if (turno == true) {
-                                buttons[ButtonIndex].setText("croce");
-                                Sign[ButtonIndex] = "croce";
-                                turno = false;
+                        if (Sign[ButtonIndex].equals("Empty")) {
+                            if (turn == true) {
+                                buttons[ButtonIndex].setText("cross");
+                                Sign[ButtonIndex] = "cross";
+                                turn = false;
                                 drawCounter++;
                                 System.out.println("" + drawCounter);
 
-                                if (Controllov(Sign,"croce") == true) {
-                                    System.out.println("Croce ha vinto");
-                                    JOptionPane.showMessageDialog(null, "Croce ha vinto");
+                                if (Controlv(Sign,"cross") == true) {
+                                    System.out.println("Cross is the winner!");
+                                    JOptionPane.showMessageDialog(null, "Cross is the winner!");
                                     for (JButton button : buttons)
                                         button.setEnabled(false);
                                 }
 
                             } else {
-                                buttons[ButtonIndex].setText("cerchio");
-                                Sign[ButtonIndex] = "cerchio";
-                                turno = true;
+                                buttons[ButtonIndex].setText("circle");
+                                Sign[ButtonIndex] = "circle";
+                                turn = true;
                                 drawCounter++;
-                                if (Controllov(Sign,"cerchio") == true) {
-                                    System.out.println("Cerchio ha vinto");
-                                    JOptionPane.showMessageDialog(null, "Cerchio ha vinto");
+                                if (Controlv(Sign,"circle") == true) {
+                                    System.out.println("Circle is the winner!");
+                                    JOptionPane.showMessageDialog(null, "Circle is the winner!");
                                     for (JButton button : buttons)
                                         button.setEnabled(false);
                                 }
@@ -77,12 +77,12 @@ public class TrisGUI {
 
 
                         } else {
-                            System.out.println("Casella già occupata sceglierne una vuota");
-                            JOptionPane.showMessageDialog(null, "Casella già occupata sceglierne una vuota");
+                            System.out.println("Box position already choosen,chose another");
+                            JOptionPane.showMessageDialog(null, "Box position already choosen,chose another");
                         }
                     } else {
-                        System.out.println("Partita finita in pareggio");
-                        JOptionPane.showMessageDialog(null, "Partita finita in pareggio");
+                        System.out.println("Match ended in a draw");
+                        JOptionPane.showMessageDialog(null, "Match ended in a draw");
                         for (JButton button : buttons)
                             button.setEnabled(false);
 
