@@ -5,14 +5,14 @@ import java.util.Arrays;
 
 public class TrisGUI {
 
-    // small change
+
     private JFrame frame;
     private JButton[] buttons;
-    private boolean turn = true;
+    private boolean isCrossTurn = true;
     private int drawCounter = 0;
 
 
-    public boolean Controlv(String[] BoardPos, String Symbol) {
+    public boolean CheckWin(String[] BoardPos, String Symbol) {
         for(int i = 0; i<3; i++){
             if(BoardPos[i].equals(Symbol) && BoardPos[i*3+1].equals(Symbol) && BoardPos[i*3+2].equals(Symbol))
                 return true;}
@@ -25,9 +25,38 @@ public class TrisGUI {
             return true;
 
         return false;
-
-
     }
+
+    public void TurnAndMoves(String[] Sign,final int ButtonIndex ){
+        if (isCrossTurn == true) {
+            buttons[ButtonIndex].setText("cross");
+            Sign[ButtonIndex] = "cross";
+            isCrossTurn = false;
+            drawCounter++;
+            System.out.println("" + drawCounter);
+
+            if (CheckWin(Sign,"cross") == true) {
+                System.out.println("Cross is the winner!");
+                JOptionPane.showMessageDialog(null, "Cross is the winner!");
+                for (JButton button : buttons)
+                    button.setEnabled(false);
+            }
+
+        } else {
+            buttons[ButtonIndex].setText("circle");
+            Sign[ButtonIndex] = "circle";
+            isCrossTurn = true;
+            drawCounter++;
+            if (CheckWin(Sign,"circle") == true) {
+                System.out.println("Circle is the winner!");
+                JOptionPane.showMessageDialog(null, "Circle is the winner!");
+                for (JButton button : buttons)
+                    button.setEnabled(false);
+            }
+
+        }
+    }
+
 
 
     public TrisGUI() {
@@ -45,58 +74,34 @@ public class TrisGUI {
             buttons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+
                     if (drawCounter < buttons.length) {
                         if (Sign[ButtonIndex].equals("Empty")) {
-                            if (turn == true) {
-                                buttons[ButtonIndex].setText("cross");
-                                Sign[ButtonIndex] = "cross";
-                                turn = false;
-                                drawCounter++;
-                                System.out.println("" + drawCounter);
-
-                                if (Controlv(Sign,"cross") == true) {
-                                    System.out.println("Cross is the winner!");
-                                    JOptionPane.showMessageDialog(null, "Cross is the winner!");
-                                    for (JButton button : buttons)
-                                        button.setEnabled(false);
-                                }
-
-                            } else {
-                                buttons[ButtonIndex].setText("circle");
-                                Sign[ButtonIndex] = "circle";
-                                turn = true;
-                                drawCounter++;
-                                if (Controlv(Sign,"circle") == true) {
-                                    System.out.println("Circle is the winner!");
-                                    JOptionPane.showMessageDialog(null, "Circle is the winner!");
-                                    for (JButton button : buttons)
-                                        button.setEnabled(false);
-                                }
-
-                            }
+                            TurnAndMoves(Sign,ButtonIndex);
 
 
                         } else {
                             System.out.println("Box position already choosen,chose another");
                             JOptionPane.showMessageDialog(null, "Box position already choosen,chose another");
                         }
-                    } else {
+
+
+                    }   else{
                         System.out.println("Match ended in a draw");
                         JOptionPane.showMessageDialog(null, "Match ended in a draw");
                         for (JButton button : buttons)
                             button.setEnabled(false);
 
                     }
+                }
+                    });
 
 
                 }
-            });
 
 
-        }
+            }
 
-
-    }
 
 
     public static void main(String[] args) {
