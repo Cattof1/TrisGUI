@@ -13,6 +13,8 @@ public class TrisGUI {
     private final String EMPTY="empty";
     private final String CROSS="cross";
     private final String CIRCLE="circle";
+    private ImageIcon iconCross = new ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCross.jpg");
+    private ImageIcon iconCircle = new  ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCircle.jpg");
 
 
 
@@ -33,7 +35,7 @@ public class TrisGUI {
 
     public void TurnAndMoves(String[] Sign,final int ButtonIndex ){
         if (isCrossTurn == true) {
-            buttons[ButtonIndex].setText(CROSS);
+            buttons[ButtonIndex].setIcon(iconCross);
             Sign[ButtonIndex] = CROSS;
             isCrossTurn = false;
             drawCounter++;
@@ -47,7 +49,7 @@ public class TrisGUI {
             }
 
         } else {
-            buttons[ButtonIndex].setText(CIRCLE);
+            buttons[ButtonIndex].setIcon(iconCircle);
             Sign[ButtonIndex] = CIRCLE;
             isCrossTurn = true;
             drawCounter++;
@@ -78,6 +80,9 @@ public class TrisGUI {
             buttons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    int width = buttons[ButtonIndex].getWidth();
+                    int length = buttons[ButtonIndex].getHeight();
+                    System.out.println("width"+width+"height"+length);
 
                     if (drawCounter < buttons.length) {
                         if (Sign[ButtonIndex].equals(EMPTY)) {
