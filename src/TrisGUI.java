@@ -10,11 +10,15 @@ public class TrisGUI {
     private JButton[] buttons;
     private boolean isCrossTurn = true;
     private int drawCounter = 0;
+    private final String EMPTY="empty";
+    private final String CROSS="cross";
+    private final String CIRCLE="circle";
+
 
 
     public boolean CheckWin(String[] BoardPos, String Symbol) {
         for(int i = 0; i<3; i++){
-            if(BoardPos[i].equals(Symbol) && BoardPos[i*3+1].equals(Symbol) && BoardPos[i*3+2].equals(Symbol))
+            if(BoardPos[i*3].equals(Symbol) && BoardPos[i*3+1].equals(Symbol) && BoardPos[i*3+2].equals(Symbol))
                 return true;}
         for(int i = 0; i<3; i++){
             if(BoardPos[i].equals(Symbol) && BoardPos[i+3].equals(Symbol) && BoardPos[i+6].equals(Symbol))
@@ -29,13 +33,13 @@ public class TrisGUI {
 
     public void TurnAndMoves(String[] Sign,final int ButtonIndex ){
         if (isCrossTurn == true) {
-            buttons[ButtonIndex].setText("cross");
-            Sign[ButtonIndex] = "cross";
+            buttons[ButtonIndex].setText(CROSS);
+            Sign[ButtonIndex] = CROSS;
             isCrossTurn = false;
             drawCounter++;
             System.out.println("" + drawCounter);
 
-            if (CheckWin(Sign,"cross") == true) {
+            if (CheckWin(Sign,CROSS) == true) {
                 System.out.println("Cross is the winner!");
                 JOptionPane.showMessageDialog(null, "Cross is the winner!");
                 for (JButton button : buttons)
@@ -43,11 +47,11 @@ public class TrisGUI {
             }
 
         } else {
-            buttons[ButtonIndex].setText("circle");
-            Sign[ButtonIndex] = "circle";
+            buttons[ButtonIndex].setText(CIRCLE);
+            Sign[ButtonIndex] = CIRCLE;
             isCrossTurn = true;
             drawCounter++;
-            if (CheckWin(Sign,"circle") == true) {
+            if (CheckWin(Sign,CIRCLE) == true) {
                 System.out.println("Circle is the winner!");
                 JOptionPane.showMessageDialog(null, "Circle is the winner!");
                 for (JButton button : buttons)
@@ -66,9 +70,9 @@ public class TrisGUI {
         frame.setLayout(new GridLayout(3, 3));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         String[] Sign = new String[9];
-        Arrays.fill(Sign, "Empty");
+        Arrays.fill(Sign, EMPTY);
         for (int i = 0; i < buttons.length; i++) {
-            buttons[i] = new JButton("Empty");
+            buttons[i] = new JButton(EMPTY);
             final int ButtonIndex = i;
             frame.add(buttons[i]);
             buttons[i].addActionListener(new ActionListener() {
@@ -76,7 +80,7 @@ public class TrisGUI {
                 public void actionPerformed(ActionEvent e) {
 
                     if (drawCounter < buttons.length) {
-                        if (Sign[ButtonIndex].equals("Empty")) {
+                        if (Sign[ButtonIndex].equals(EMPTY)) {
                             TurnAndMoves(Sign,ButtonIndex);
 
 
