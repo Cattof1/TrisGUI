@@ -15,6 +15,7 @@ public class TrisGUI {
     private final String CIRCLE="circle";
     private ImageIcon iconCross = new ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCross.png");
     private ImageIcon iconCircle = new  ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCircle.png");
+    private int PlayAgain;
 
 
 
@@ -63,6 +64,15 @@ public class TrisGUI {
         }
     }
 
+    public void Reset(){
+        TrisGUI newgame = new TrisGUI();
+        frame.dispose();
+        frame = newgame.frame;
+        newgame.frame.setVisible(true);
+
+
+
+    }
 
 
     public TrisGUI() {
@@ -97,8 +107,11 @@ public class TrisGUI {
 
                     }   else{
                         System.out.println("Match ended in a draw");
-                        JOptionPane.showMessageDialog(null, "Match ended in a draw");
-                        for (JButton button : buttons)
+                        PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Match ended in a draw,play again?");
+                        if(PlayAgain == JOptionPane.YES_OPTION)
+                            Reset();
+
+                         for (JButton button : buttons)
                             button.setEnabled(false);
 
                     }
