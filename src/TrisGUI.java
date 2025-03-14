@@ -1,7 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class TrisGUI {
 
@@ -35,28 +37,45 @@ public class TrisGUI {
     }
 
     public void TurnAndMoves(String[] Sign,final int ButtonIndex ){
+        Random random = new Random();
+        int randomValue;
         if (isCrossTurn == true) {
+            buttons[ButtonIndex].setText(CROSS);
             buttons[ButtonIndex].setIcon(iconCross);
             Sign[ButtonIndex] = CROSS;
             isCrossTurn = false;
             drawCounter++;
-            System.out.println("" + drawCounter);
 
             if (CheckWin(Sign,CROSS) == true) {
                 System.out.println("Cross is the winner!");
-                JOptionPane.showMessageDialog(null, "Cross is the winner!");
+                PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Cross is the winner! play again?");
+                if(PlayAgain == JOptionPane.YES_OPTION)
+                    Reset();
+
                 for (JButton button : buttons)
                     button.setEnabled(false);
             }
 
         } else {
-            buttons[ButtonIndex].setIcon(iconCircle);
-            Sign[ButtonIndex] = CIRCLE;
+            ArrayList<Integer> myArrayList = new ArrayList<>();
+            for(int i=0; i<buttons.length; i++) {
+                if (buttons[i].getText().equals(EMPTY))
+                    myArrayList.add(i);
+            }
+
+            randomValue = random.nextInt(myArrayList.size());
+            int choosenValue =myArrayList.get(randomValue);
+            buttons[choosenValue].setText(CIRCLE);
+            buttons[choosenValue].setIcon(iconCircle);
+            Sign[choosenValue] = CIRCLE;
             isCrossTurn = true;
             drawCounter++;
             if (CheckWin(Sign,CIRCLE) == true) {
                 System.out.println("Circle is the winner!");
-                JOptionPane.showMessageDialog(null, "Circle is the winner!");
+                PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Circle is the winner! play again?");
+                if(PlayAgain == JOptionPane.YES_OPTION)
+                    Reset();
+
                 for (JButton button : buttons)
                     button.setEnabled(false);
             }
@@ -68,11 +87,7 @@ public class TrisGUI {
         TrisGUI newgame = new TrisGUI();
         frame.dispose();
         frame = newgame.frame;
-        newgame.frame.setVisible(true);
-
-
-
-    }
+        newgame.frame.setVisible(true); }
 
 
     public TrisGUI() {
@@ -92,7 +107,6 @@ public class TrisGUI {
                 public void actionPerformed(ActionEvent e) {
                     int width = buttons[ButtonIndex].getWidth();
                     int length = buttons[ButtonIndex].getHeight();
-                    System.out.println("width"+width+"height"+length);
 
                     if (drawCounter < buttons.length) {
                         if (Sign[ButtonIndex].equals(EMPTY)) {
