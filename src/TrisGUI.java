@@ -36,11 +36,18 @@ public class TrisGUI {
         return false;
     }
 
+    public boolean GameEnded(String[] Sign){
+        if(CheckWin(Sign,CROSS) == true || CheckWin(Sign,CIRCLE) == true)
+            return true;
+        if(drawCounter == buttons.length)
+            return true;
+        else
+            return false;
+
+    }
+
     public void TurnAndMoves(String[] Sign,final int ButtonIndex ){
-        Random random = new Random();
-        int randomValue;
         if (isCrossTurn == true) {
-            buttons[ButtonIndex].setText(CROSS);
             buttons[ButtonIndex].setIcon(iconCross);
             Sign[ButtonIndex] = CROSS;
             isCrossTurn = false;
@@ -56,32 +63,52 @@ public class TrisGUI {
                     button.setEnabled(false);
             }
 
-        } else {
-            ArrayList<Integer> myArrayList = new ArrayList<>();
-            for(int i=0; i<buttons.length; i++) {
-                if (buttons[i].getText().equals(EMPTY))
-                    myArrayList.add(i);
-            }
-
-            randomValue = random.nextInt(myArrayList.size());
-            int choosenValue =myArrayList.get(randomValue);
-            buttons[choosenValue].setText(CIRCLE);
-            buttons[choosenValue].setIcon(iconCircle);
-            Sign[choosenValue] = CIRCLE;
-            isCrossTurn = true;
-            drawCounter++;
-            if (CheckWin(Sign,CIRCLE) == true) {
-                System.out.println("Circle is the winner!");
-                PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Circle is the winner! play again?");
-                if(PlayAgain == JOptionPane.YES_OPTION)
-                    Reset();
-
-                for (JButton button : buttons)
-                    button.setEnabled(false);
-            }
-
         }
     }
+
+    public void AImove(String[] Sign,final int ButtonIndex){
+        Random random = new Random();
+        int randomValue;
+        if (drawCounter == buttons.length){
+            System.out.println("Match ended in a draw");
+            PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Match ended in a draw,play again?");
+            if(PlayAgain == JOptionPane.YES_OPTION)
+                Reset();
+
+            for (JButton button : buttons)
+                button.setEnabled(false);
+
+        } else {
+
+            if (isCrossTurn == false) {
+                ArrayList<Integer> myArrayList = new ArrayList<>();
+                for (int i = 0; i < buttons.length; i++) {
+                    if (Sign[i].equals(EMPTY))
+                        myArrayList.add(i);
+                }
+
+                randomValue = random.nextInt(myArrayList.size());
+                int choosenValue = myArrayList.get(randomValue);
+                buttons[choosenValue].setIcon(iconCircle);
+                Sign[choosenValue] = CIRCLE;
+                isCrossTurn = true;
+                drawCounter++;
+                if (CheckWin(Sign, CIRCLE) == true) {
+                    System.out.println("Circle is the winner!");
+                    PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Circle is the winner! play again?");
+                    if (PlayAgain == JOptionPane.YES_OPTION)
+                        Reset();
+
+                    for (JButton button : buttons)
+                        button.setEnabled(false);
+                }
+
+            }
+        }
+
+
+    }
+
 
     public void Reset(){
         TrisGUI newgame = new TrisGUI();
@@ -105,12 +132,21 @@ public class TrisGUI {
             buttons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int width = buttons[ButtonIndex].getWidth();
-                    int length = buttons[ButtonIndex].getHeight();
 
-                    if (drawCounter < buttons.length) {
+
                         if (Sign[ButtonIndex].equals(EMPTY)) {
                             TurnAndMoves(Sign,ButtonIndex);
+
+                               if(isCrossTurn == false && GameEnded(Sign) == false) {
+                                   SwingUtilities.invokeLater(new Runnable() {
+                                       @Override
+                                       public void run() {
+                                           AImove(Sign, ButtonIndex);
+
+
+                                       }
+                                   });
+                               }
 
 
                         } else {
@@ -119,16 +155,7 @@ public class TrisGUI {
                         }
 
 
-                    }   else{
-                        System.out.println("Match ended in a draw");
-                        PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Match ended in a draw,play again?");
-                        if(PlayAgain == JOptionPane.YES_OPTION)
-                            Reset();
 
-                         for (JButton button : buttons)
-                            button.setEnabled(false);
-
-                    }
                 }
                     });
 
