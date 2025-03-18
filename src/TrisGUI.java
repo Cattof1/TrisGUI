@@ -37,6 +37,22 @@ public class TrisGUI {
         return false;
     }
 
+    public boolean GoFirst(){
+        int dialog = JOptionPane.showInternalConfirmDialog(null,"Do you want to start first? You'll play X");
+
+                if(dialog == JOptionPane.YES_OPTION)
+                    return true;
+                else if (dialog == JOptionPane.NO_OPTION)
+                    return false;
+                else if (dialog == JOptionPane.CANCEL_OPTION)
+                    return false;
+                else if (dialog == JOptionPane.CLOSED_OPTION)
+                    return false;
+
+return false;
+
+    }
+
     public boolean GameEnded(String[] Sign) {
         if (CheckWin(Sign, CROSS) == true || CheckWin(Sign, CIRCLE) == true)
             return true;
