@@ -53,17 +53,8 @@ public class TrisGUI {
             Sign[ButtonIndex] = CROSS;
             isCrossTurn = false;
             drawCounter++;
-
-            if (CheckWin(Sign, CROSS) == true) {
-                System.out.println("Cross is the winner!");
-                PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Cross is the winner! play again?");
-                if (PlayAgain == JOptionPane.YES_OPTION)
-                    Reset();
-
-                for (JButton button : buttons)
-                    button.setEnabled(false);
-            }
-
+            if (CheckWin(Sign, CROSS) == true)
+                PlayAgain(CROSS);
         }
     }
 
@@ -83,20 +74,9 @@ public class TrisGUI {
                 Sign[choosenValue] = CIRCLE;
                 isCrossTurn = true;
                 drawCounter++;
-                if (CheckWin(Sign, CIRCLE) == true) {
-                    System.out.println("Circle is the winner!");
-                    PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Circle is the winner! play again?");
-                    if (PlayAgain == JOptionPane.YES_OPTION)
-                        Reset();
-
-                    for (JButton button : buttons)
-                        button.setEnabled(false);
-                }
-
+                if (CheckWin(Sign, CIRCLE) == true)
+                    PlayAgain(CIRCLE);
             }
-
-
-
     }
 
 
@@ -107,6 +87,31 @@ public class TrisGUI {
         newgame.frame.setVisible(true);
     }
 
+    public void PlayAgain(String WinnerDraw){
+        if(WinnerDraw == CROSS){
+            System.out.println("Cross is the winner!");
+            PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Cross is the winner! play again?");
+            if (PlayAgain == JOptionPane.YES_OPTION)
+                Reset();
+            for (JButton button : buttons)
+                button.setEnabled(false);
+        } else if (WinnerDraw == CIRCLE) {
+            System.out.println("Circle is the winner!");
+            PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Circle is the winner! play again?");
+            if (PlayAgain == JOptionPane.YES_OPTION)
+                Reset();
+            for (JButton button : buttons)
+                button.setEnabled(false);
+        } else {
+            System.out.println("Match ended in a draw");
+            PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Match ended in a draw,play again?");
+            if (PlayAgain == JOptionPane.YES_OPTION)
+                Reset();
+            for (JButton button : buttons)
+                button.setEnabled(false);
+        }
+
+    }
 
     public TrisGUI() {
         frame = new JFrame("TrisGUI");
@@ -124,29 +129,8 @@ public class TrisGUI {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if(GameEnded(Sign) == true){
-                        if (CheckWin(Sign, CROSS) == true) {
-                            System.out.println("Cross is the winner!");
-                            PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Cross is the winner! play again?");
-                            if (PlayAgain == JOptionPane.YES_OPTION)
-                                Reset();
-                            for (JButton button : buttons)
-                                button.setEnabled(false);
-                        } else if (CheckWin(Sign, CIRCLE) == true) {
-                            System.out.println("Circle is the winner!");
-                            PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Circle is the winner! play again?");
-                            if (PlayAgain == JOptionPane.YES_OPTION)
-                                Reset();
-                            for (JButton button : buttons)
-                                button.setEnabled(false);}
-                          else if (drawCounter == buttons.length) {
-                            System.out.println("Match ended in a draw");
-                            PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Match ended in a draw,play again?");
-                            if (PlayAgain == JOptionPane.YES_OPTION)
-                                Reset();
-                            for (JButton button : buttons)
-                                button.setEnabled(false);
-                        }
-
+                         if (drawCounter == buttons.length)
+                            PlayAgain("");
                         return;}
 
 
