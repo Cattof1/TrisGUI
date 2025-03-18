@@ -18,6 +18,7 @@ public class TrisGUI {
     private ImageIcon iconCross = new ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCross.png");
     private ImageIcon iconCircle = new ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCircle.png");
     private int PlayAgain;
+    boolean turns;
 
 
     public boolean CheckWin(String[] BoardPos, String Symbol) {
@@ -45,12 +46,11 @@ public class TrisGUI {
                 else if (dialog == JOptionPane.NO_OPTION)
                     return false;
                 else if (dialog == JOptionPane.CANCEL_OPTION)
-                    return false;
+                    System.exit(0);
                 else if (dialog == JOptionPane.CLOSED_OPTION)
-                    return false;
+                    System.exit(0);
 
-return false;
-
+return true;
     }
 
     public boolean GameEnded(String[] Sign) {
@@ -63,20 +63,50 @@ return false;
 
     }
 
-    public void TurnAndMoves(String[] Sign, final int ButtonIndex) {
-        if (isCrossTurn == true) {
-            buttons[ButtonIndex].setIcon(iconCross);
-            Sign[ButtonIndex] = CROSS;
-            isCrossTurn = false;
-            drawCounter++;
-            if (CheckWin(Sign, CROSS) == true)
-                PlayAgain(CROSS);
+    public void CrossTurn(String[] Sign, final int ButtonIndex) {
+        Random random = new Random();
+        int randomValue;
+        if (turns == true){
+            if (isCrossTurn == true) {
+                buttons[ButtonIndex].setIcon(iconCross);
+                Sign[ButtonIndex] = CROSS;
+                isCrossTurn = false;
+                drawCounter++;
+                if (CheckWin(Sign, CROSS) == true)
+                    PlayAgain(CROSS);}
+            } else {
+            if (isCrossTurn == true) {
+                ArrayList<Integer> myArrayList = new ArrayList<>();
+                for (int i = 0; i < buttons.length; i++) {
+                    if (Sign[i].equals(EMPTY))
+                        myArrayList.add(i);
+                }
+
+                randomValue = random.nextInt(myArrayList.size());
+                int choosenValue = myArrayList.get(randomValue);
+                buttons[choosenValue].setIcon(iconCross);
+                Sign[choosenValue] = CROSS;
+                isCrossTurn = false;
+                drawCounter++;
+                if (CheckWin(Sign, CROSS) == true)
+                    PlayAgain(CROSS);
+            }
+
         }
     }
 
-    public void AImove(String[] Sign, final int ButtonIndex) {
+    public void CircleTurn(String[] Sign, final int ButtonIndex) {
         Random random = new Random();
         int randomValue;
+        if (turns == false){
+            if (isCrossTurn == false) {
+                buttons[ButtonIndex].setIcon(iconCircle);
+                Sign[ButtonIndex] = CIRCLE;
+                isCrossTurn = true;
+                drawCounter++;
+                if (CheckWin(Sign, CIRCLE) == true)
+                    PlayAgain(CIRCLE);}
+        } else{
             if (isCrossTurn == false) {
                 ArrayList<Integer> myArrayList = new ArrayList<>();
                 for (int i = 0; i < buttons.length; i++) {
@@ -93,6 +123,9 @@ return false;
                 if (CheckWin(Sign, CIRCLE) == true)
                     PlayAgain(CIRCLE);
             }
+        }
+
+
     }
 
 
@@ -137,6 +170,7 @@ return false;
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         String[] Sign = new String[9];
         Arrays.fill(Sign, EMPTY);
+        turns = GoFirst();
         for (int i = 0; i < buttons.length; i++) {
             buttons[i] = new JButton(EMPTY);
             final int ButtonIndex = i;
@@ -144,23 +178,31 @@ return false;
             buttons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if(GameEnded(Sign) == true){
-                         if (drawCounter == buttons.length)
+                    if (GameEnded(Sign) == true) {
+                        if (drawCounter == buttons.length)
                             PlayAgain("");
                         return;}
-
-
                     if (Sign[ButtonIndex].equals(EMPTY)) {
-                        TurnAndMoves(Sign, ButtonIndex);
-                        if (isCrossTurn == false && GameEnded(Sign) == false) {
-                            SwingUtilities.invokeLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    AImove(Sign, ButtonIndex);
 
+                        if (turns == true) {
+                            CrossTurn(Sign, ButtonIndex);
+                            if (isCrossTurn == false && GameEnded(Sign) == false) {
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        CircleTurn(Sign, ButtonIndex);}
+                                });
+                            }
+                        } else {
+                            CircleTurn(Sign,ButtonIndex);
+                            if (isCrossTurn == true && GameEnded(Sign) == false) {
+                                SwingUtilities.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        CrossTurn(Sign,ButtonIndex);}
+                                });
+                            }
 
-                                }
-                            });
                         }
 
 
@@ -168,21 +210,17 @@ return false;
                         System.out.println("Box position already choosen,chose another");
                         JOptionPane.showMessageDialog(null, "Box position already choosen,chose another");
                     }
-
-
                 }
             });
-
-
         }
-
-
     }
 
 
     public static void main(String[] args) {
         TrisGUI gui = new TrisGUI();
         gui.frame.setVisible(true);
+
+
 
 
     }
