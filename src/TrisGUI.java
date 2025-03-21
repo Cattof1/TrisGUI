@@ -18,7 +18,9 @@ public class TrisGUI {
     private ImageIcon iconCross = new ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCross.png");
     private ImageIcon iconCircle = new ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCircle.png");
     private int PlayAgain;
-    boolean turns;
+    private boolean turns;
+    private boolean CircleFirstTurnDone=false;
+
 
 
     public boolean CheckWin(String[] BoardPos, String Symbol) {
@@ -41,16 +43,16 @@ public class TrisGUI {
     public boolean GoFirst(){
         int dialog = JOptionPane.showInternalConfirmDialog(null,"Do you want to start first? You'll play X");
 
-                if(dialog == JOptionPane.YES_OPTION)
-                    return true;
-                else if (dialog == JOptionPane.NO_OPTION)
-                    return false;
-                else if (dialog == JOptionPane.CANCEL_OPTION)
-                    System.exit(0);
-                else if (dialog == JOptionPane.CLOSED_OPTION)
-                    System.exit(0);
+        if(dialog == JOptionPane.YES_OPTION)
+            return true;
+        else if (dialog == JOptionPane.NO_OPTION)
+            return false;
+        else if (dialog == JOptionPane.CANCEL_OPTION)
+            System.exit(0);
+        else if (dialog == JOptionPane.CLOSED_OPTION)
+            System.exit(0);
 
-return true;
+        return true;
     }
 
     public boolean GameEnded(String[] Sign) {
@@ -74,7 +76,7 @@ return true;
                 drawCounter++;
                 if (CheckWin(Sign, CROSS) == true)
                     PlayAgain(CROSS);}
-            } else {
+        } else {
             if (isCrossTurn == true) {
                 ArrayList<Integer> myArrayList = new ArrayList<>();
                 for (int i = 0; i < buttons.length; i++) {
@@ -98,15 +100,16 @@ return true;
     public void CircleTurn(String[] Sign, final int ButtonIndex) {
         Random random = new Random();
         int randomValue;
-        if (turns == false){
+        if (turns == false) {
             if (isCrossTurn == false) {
                 buttons[ButtonIndex].setIcon(iconCircle);
                 Sign[ButtonIndex] = CIRCLE;
                 isCrossTurn = true;
                 drawCounter++;
                 if (CheckWin(Sign, CIRCLE) == true)
-                    PlayAgain(CIRCLE);}
-        } else{
+                    PlayAgain(CIRCLE);
+            }
+        } else {
             if (isCrossTurn == false) {
                 ArrayList<Integer> myArrayList = new ArrayList<>();
                 for (int i = 0; i < buttons.length; i++) {
@@ -124,9 +127,26 @@ return true;
                     PlayAgain(CIRCLE);
             }
         }
+    }
 
+    public void CrossFirstTurn(String[] Sign){
+        Random random = new Random();
+        int randomValue;
+            ArrayList<Integer> myArrayList = new ArrayList<>();
+            for (int i = 0; i < buttons.length; i++) {
+                if (Sign[i].equals(EMPTY))
+                    myArrayList.add(i);
+            }
+
+            randomValue = random.nextInt(myArrayList.size());
+            int choosenValue = myArrayList.get(randomValue);
+            buttons[choosenValue].setIcon(iconCross);
+            Sign[choosenValue] = CROSS;
+            isCrossTurn = false;
+            drawCounter++;
 
     }
+
 
 
     public void Reset() {
@@ -168,13 +188,20 @@ return true;
         frame.setSize(500, 500);
         frame.setLayout(new GridLayout(3, 3));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(false);
         String[] Sign = new String[9];
         Arrays.fill(Sign, EMPTY);
         turns = GoFirst();
-        for (int i = 0; i < buttons.length; i++) {
+        for(int i=0; i < buttons.length; i++){
             buttons[i] = new JButton(EMPTY);
+            frame.add(buttons[i]);}
+        if(turns == false ){
+            CrossFirstTurn(Sign);
+        }
+
+        for (int i = 0; i < buttons.length; i++) {
             final int ButtonIndex = i;
-            frame.add(buttons[i]);
+            //frame.setVisible(true);
             buttons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -219,6 +246,7 @@ return true;
     public static void main(String[] args) {
         TrisGUI gui = new TrisGUI();
         gui.frame.setVisible(true);
+
 
 
 
