@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+
 public class TrisGUI {
 
 
@@ -15,11 +16,13 @@ public class TrisGUI {
     private final String EMPTY = "empty";
     private final String CROSS = "cross";
     private final String CIRCLE = "circle";
-    private ImageIcon iconCross = new ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCross.png");
-    private ImageIcon iconCircle = new ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCircle.png");
+    //private ImageIcon iconCross = new ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCross.png");
+    //private ImageIcon iconCircle = new ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCircle.png");
     private int PlayAgain;
     private boolean turns;
     private boolean CircleFirstTurnDone=false;
+    private ImageIcon iconCross = new ImageIcon(TrisGUI.class.getResource("/IconCross.png")) ;
+    private ImageIcon iconCircle = new ImageIcon(TrisGUI.class.getResource("/IconCircle.png"));
 
 
 
