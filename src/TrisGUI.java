@@ -19,7 +19,7 @@ public class TrisGUI {
     //private ImageIcon iconCross = new ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCross.png");
     //private ImageIcon iconCircle = new ImageIcon("C:/Users/Filippo/IdeaProjects/TrisGUI/Icons/IconCircle.png");
     private int PlayAgain;
-    private boolean turns;
+    private boolean whoFirst;
     private boolean CircleFirstTurnDone=false;
     private ImageIcon iconCross = new ImageIcon(TrisGUI.class.getResource("/IconCross.png")) ;
     private ImageIcon iconCircle = new ImageIcon(TrisGUI.class.getResource("/IconCircle.png"));
@@ -71,7 +71,7 @@ public class TrisGUI {
     public void CrossTurn(String[] Sign, final int ButtonIndex) {
         Random random = new Random();
         int randomValue;
-        if (turns == true){
+        if (whoFirst == true){
             if (isCrossTurn == true) {
                 buttons[ButtonIndex].setIcon(iconCross);
                 Sign[ButtonIndex] = CROSS;
@@ -103,7 +103,7 @@ public class TrisGUI {
     public void CircleTurn(String[] Sign, final int ButtonIndex) {
         Random random = new Random();
         int randomValue;
-        if (turns == false) {
+        if (whoFirst == false) {
             if (isCrossTurn == false) {
                 buttons[ButtonIndex].setIcon(iconCircle);
                 Sign[ButtonIndex] = CIRCLE;
@@ -185,6 +185,52 @@ public class TrisGUI {
 
     }
 
+    public void createButtonActionListener(String[] Sign) {
+        for (int i = 0; i < buttons.length; i++) {
+            final int ButtonIndex = i;
+
+            buttons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (GameEnded(Sign) == true) {
+                        if (drawCounter == buttons.length)
+                            PlayAgain("");
+                        return;
+                    }
+                    if (Sign[ButtonIndex].equals(EMPTY)) {
+                        turnLogic(Sign,ButtonIndex);
+
+                    } else {
+                        System.out.println("Box position already choosen,chose another");
+                        JOptionPane.showMessageDialog(frame, "Box position already choosen,chose another");
+                    }
+                }
+            });
+        }
+    }
+
+    public void turnLogic(String[] Sign, final int ButtonIndex) {
+        if (whoFirst == true) {
+            CrossTurn(Sign, ButtonIndex);
+            AiTurns(Sign,ButtonIndex);
+        } else {
+            CircleTurn(Sign, ButtonIndex);
+            AiTurns(Sign, ButtonIndex);
+        }
+    }
+
+    public void AiTurns(String[] Sign, final int ButtonIndex) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if (isCrossTurn == false && GameEnded(Sign) == false)
+                    CircleTurn(Sign, ButtonIndex);
+                if (isCrossTurn == true && GameEnded(Sign) == false)
+                    CrossTurn(Sign, ButtonIndex);
+            }
+        });
+    }
+
     public TrisGUI() {
         frame = new JFrame("TrisGUI");
         buttons = new JButton[9];
@@ -194,55 +240,16 @@ public class TrisGUI {
         frame.setResizable(false);
         String[] Sign = new String[9];
         Arrays.fill(Sign, EMPTY);
-        turns = GoFirst();
+        whoFirst = GoFirst();
         for(int i=0; i < buttons.length; i++){
             buttons[i] = new JButton(EMPTY);
             frame.add(buttons[i]);}
-        if(turns == false ){
+        if(whoFirst == false ){
             CrossFirstTurn(Sign);
         }
-
-        for (int i = 0; i < buttons.length; i++) {
-            final int ButtonIndex = i;
-            //frame.setVisible(true);
-            buttons[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (GameEnded(Sign) == true) {
-                        if (drawCounter == buttons.length)
-                            PlayAgain("");
-                        return;}
-                    if (Sign[ButtonIndex].equals(EMPTY)) {
-
-                        if (turns == true) {
-                            CrossTurn(Sign, ButtonIndex);
-                            if (isCrossTurn == false && GameEnded(Sign) == false) {
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        CircleTurn(Sign, ButtonIndex);}
-                                });
-                            }
-                        } else {
-                            CircleTurn(Sign,ButtonIndex);
-                            if (isCrossTurn == true && GameEnded(Sign) == false) {
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        CrossTurn(Sign,ButtonIndex);}
-                                });
-                            }
-
-                        }
+        createButtonActionListener(Sign);
 
 
-                    } else {
-                        System.out.println("Box position already choosen,chose another");
-                        JOptionPane.showMessageDialog(null, "Box position already choosen,chose another");
-                    }
-                }
-            });
-        }
     }
 
 
