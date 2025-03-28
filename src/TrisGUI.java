@@ -20,14 +20,17 @@ public class TrisGUI {
     private final String CIRCLE = "circle";
     private int PlayAgain;
     private boolean whoFirst;
-    private boolean CircleFirstTurnDone=false;
     private ImageIcon iconCross = new ImageIcon(TrisGUI.class.getResource("/IconCross.png")) ;
     private ImageIcon iconCircle = new ImageIcon(TrisGUI.class.getResource("/IconCircle.png"));
     private JPanel Line;
 
+    private int linecount;
 
 
     public boolean CheckWin(String[] BoardPos, String Symbol) {
+        System.out.println("CheckWin called with "+Symbol);
+
+
         for (int i = 0; i < 3; i++) {
             if (BoardPos[i * 3].equals(Symbol) && BoardPos[i * 3 + 1].equals(Symbol) && BoardPos[i * 3 + 2].equals(Symbol))
                 return true;
@@ -44,23 +47,26 @@ public class TrisGUI {
         return false;
     }
 
-    /*public void winLine(){
+    public void winLine(){
+        System.out.println("winLine called");
         Line = new JPanel(){
             protected void paintComponent (Graphics g){
                 super.paintComponent(g);
                 g.setColor(Color.RED);
                 g.drawLine(0,0,1000,1000);
-                g.fillRect(50,50,20,20);
                 System.out.println("test color");
+                linecount++;
+                System.out.println("times winLine get called="+linecount);
+
 
             }
         };
         Line.setOpaque(false);
+        Line.setBounds(0,0,frame.getWidth(),frame.getHeight());
         Line.setBackground(new Color(0,0,0,0));
-        //frame.add(Line);
         frame.getLayeredPane().add(Line,JLayeredPane.PALETTE_LAYER);
         Line.repaint();
-    }*/
+    }
 
     public boolean GoFirst(){
         int dialog = JOptionPane.showInternalConfirmDialog(null,"Do you want to start first? You'll play X");
@@ -78,8 +84,6 @@ public class TrisGUI {
     }
 
     public boolean GameEnded(String[] Sign) {
-        if (CheckWin(Sign, CROSS) == true || CheckWin(Sign, CIRCLE) == true)
-            return true;
         if (drawCounter == buttons.length)
             return true;
         else
@@ -88,25 +92,18 @@ public class TrisGUI {
     }
 
     public void CrossTurn(String[] Sign, final int ButtonIndex) {
-        //System.out.println("CrossTurn: Start");
-        //System.out.println("whoFirst="+whoFirst+"/isCrossTurn="+isCrossTurn);
-
         Random random = new Random();
         int randomValue;
         if (whoFirst == true){
             if (isCrossTurn == true) {
-                //System.out.println("CrossTurn: isCrossTurn true");
                 buttons[ButtonIndex].setIcon(iconCross);
                 Sign[ButtonIndex] = CROSS;
-                //System.out.println("system out cross"+Arrays.toString(Sign));
                 isCrossTurn = false;
                 drawCounter++;
-                System.out.println("drawcounter ="+drawCounter);
                 if (CheckWin(Sign, CROSS) == true){
-                    //winLine();
+                    winLine();
                     PlayAgain(CROSS);}
                 }
-            //System.out.println("CrossTurn: end");
         } else {
             if (isCrossTurn == true) {
                 ArrayList<Integer> myArrayList = new ArrayList<>();
@@ -143,20 +140,14 @@ public class TrisGUI {
         } else {
             if (isCrossTurn == false) {
                 ArrayList<Integer> myArrayList = new ArrayList<>();
-                //System.out.println("System out circle turn"+Arrays.toString(Sign));
                 for (int i = 0; i < buttons.length; i++) {
-                    if (Sign[i].equals(EMPTY)){
-                        //System.out.print("Sign["+i+"] = "+Sign[i]+"-");
-                        myArrayList.add(i);}
+                    if (Sign[i].equals(EMPTY))
+                        myArrayList.add(i);
                 }
-                System.out.println();
 
-                //for(int i=0; i<myArrayList.size(); i++)
-                //System.out.println("valori possibili"+myArrayList.get(i));
 
                 randomValue = random.nextInt(myArrayList.size());
                 int choosenValue = myArrayList.get(randomValue);
-                //System.out.println("valore scelto"+choosenValue);
                 buttons[choosenValue].setIcon(iconCircle);
                 Sign[choosenValue] = CIRCLE;
                 isCrossTurn = true;
@@ -195,6 +186,8 @@ public class TrisGUI {
     }
 
     public void PlayAgain(String WinnerDraw){
+        System.out.println("Play again is called with "+WinnerDraw);
+
         if(WinnerDraw == CROSS){
             System.out.println("Cross is the winner!");
             PlayAgain = JOptionPane.showInternalConfirmDialog(null, "Cross is the winner! play again?");
@@ -221,13 +214,13 @@ public class TrisGUI {
     }
 
     public void createButtonActionListener(String[] Sign) {
+
         for (int i = 0; i < buttons.length; i++) {
             final int ButtonIndex = i;
 
             buttons[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("Button " + ButtonIndex + " clicked");
                     if (GameEnded(Sign) == true) {
                         if (drawCounter == buttons.length)
                             PlayAgain("");
@@ -246,30 +239,20 @@ public class TrisGUI {
     }
 
     public void turnLogic(String[] Sign, final int ButtonIndex) {
-        System.out.println("turnLogic: Start");
         if (whoFirst == true) {
             CrossTurn(Sign, ButtonIndex);
-            System.out.println("turnLogic: CrossTurn called, AiTurns called");
             AiTurns(Sign,ButtonIndex);
         } else {
             CircleTurn(Sign, ButtonIndex);
-            System.out.println("turnLogic: CircleTurn called, AiTurns called");
             AiTurns(Sign, ButtonIndex);
         }
-        System.out.println("turnLogic: End");
     }
 
     public void AiTurns(String[] Sign, final int ButtonIndex) {
-        System.out.println("AiTurns: Start");
-        System.out.println("AiTurns: isCrossTurn = " + isCrossTurn + ", GameEnded = " + GameEnded(Sign));
-
-                if (isCrossTurn == false && GameEnded(Sign) == false)
+        if (isCrossTurn == false && GameEnded(Sign) == false)
                     CircleTurn(Sign, ButtonIndex);
-                else if (isCrossTurn == true && GameEnded(Sign) == false)
-                    CrossTurn(Sign, ButtonIndex);
-
-        System.out.println("AiTurns: End");
-    }
+        else if (isCrossTurn == true && GameEnded(Sign) == false)
+                    CrossTurn(Sign, ButtonIndex);}
 
     public TrisGUI() {
         frame = new JFrame("TrisGUI");
